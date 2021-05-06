@@ -1,0 +1,15 @@
+package com.cg.ova.service;
+
+import com.cg.ova.exception.OrderIdNotFoundException;
+import com.cg.ova.model.OrderModel;
+
+
+
+public interface IOrderService {
+	public OrderModel addOrder(OrderModel orderModel) throws OrderIdNotFoundException ;
+	public OrderModel updateOrder(OrderModel orderModel) throws OrderIdNotFoundException ;
+	public boolean cancelOrder(Long orderNo) throws OrderIdNotFoundException ;
+	public OrderModel viewOrderList(Long orderNo) throws OrderIdNotFoundException ;
+	
+
+}

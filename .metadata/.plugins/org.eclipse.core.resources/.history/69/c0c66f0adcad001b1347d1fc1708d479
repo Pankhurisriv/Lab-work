@@ -1,0 +1,12 @@
+package com.cg.ova.service;
+
+import com.cg.ova.exception.LoginFailedException;
+import com.cg.ova.exception.UserNotFoundException;
+import com.cg.ova.model.UserModel;
+
+public interface IUserService {
+	public UserModel validateUser(Long userId, String password)throws LoginFailedException, UserNotFoundException;
+	//public boolean logoutUser(Long userId)throws UserNotFoundException;
+	
+	public UserModel viewUser(Long userId)throws UserNotFoundException;
+}

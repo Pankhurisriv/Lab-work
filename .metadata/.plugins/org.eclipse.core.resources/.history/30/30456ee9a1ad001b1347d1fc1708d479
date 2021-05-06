@@ -1,0 +1,88 @@
+package com.cg.ova.util;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.cg.ova.dao.IVegetableDTORepository;
+import com.cg.ova.entity.VegetableDTO;
+import com.cg.ova.model.VegetableDTOModel;
+
+
+
+@Service
+public class EMParserVegetableDTO {
+	
+	@Autowired
+	private IVegetableDTORepository vegDAO;
+	
+	@Autowired
+	private EMParserOrder orderParser;
+	
+	@Autowired
+	private EMParserCartDTO cartParser;
+	
+	public EMParserVegetableDTO() {
+		this.orderParser=new EMParserOrder();
+		this.cartParser=new EMParserCartDTO();
+	}
+	
+	public EMParserVegetableDTO(IVegetableDTORepository vegDAO) {
+		super();
+		this.vegDAO = vegDAO;
+		this.orderParser=new EMParserOrder();
+		this.cartParser=new EMParserCartDTO();
+	}
+
+
+
+	public VegetableDTOModel parse(VegetableDTO source) {
+		return source==null?null:
+			new VegetableDTOModel (source.getVegId(),
+					source.getName(),
+					source.getType(),
+					source.getPrice(),
+					source.getQuantity(),
+					source.getCartDTO().getCartId()
+					
+					);
+	}
+	
+	public VegetableDTO parse(VegetableDTOModel source) {
+		return source==null?null:
+			new VegetableDTO (source.getVegId(),
+					source.getName(),
+					source.getType(),
+					source.getPrice(),
+					source.getQuantity()
+					//cartParser.parse(source.getCartDTO()),
+					source.getSubscriber().getSubscriberId(),
+					
+					);
+	}
+	
+public List<VegetableDTO> parse(List<VegetableDTOModel> list){
+		
+		List<VegetableDTO> rlist =new ArrayList<>();
+		for(VegetableDTOModel model : list) {
+			rlist.add(parse(model));
+		}
+		return rlist;
+	}
+	
+	public List<VegetableDTOModel> parseEntity(List<VegetableDTO> list){
+		
+		List<VegetableDTOModel> rlist =new ArrayList<>();
+		for(VegetableDTO entity : list) {
+			rlist.add(parse(entity));
+		}
+		return rlist;
+	}
+	
+
+}	
+
+
+

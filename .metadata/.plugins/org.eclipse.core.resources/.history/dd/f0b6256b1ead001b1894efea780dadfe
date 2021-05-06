@@ -1,0 +1,74 @@
+package com.cg.ova.service;
+
+import javax.transaction.Transactional;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import com.example.demo.dao.IBillingDetailsRepository;
+import com.example.demo.exception.BillIdNotFoundException;
+import com.example.demo.model.BillingDetailsModel;
+import com.example.demo.util.EMParserBill;
+
+@Service
+public class BillingDetailsImpl implements IBillingDetailsService {
+
+	
+	@Autowired
+	private IBillingDetailsRepository billingDAO;
+	@Autowired
+	private EMParserBill parser;
+	
+	public BillingDetailsImpl() {
+		this.parser = new EMParserBill();
+	}
+	
+	public BillingDetailsImpl(IBillingDetailsRepository billingDAO) {
+		super();
+		this.billingDAO = billingDAO;
+		this.parser = new EMParserBill();
+	}
+
+	 /* Implementation of addBill to add Bill */
+    @Transactional
+	@Override
+	public BillingDetailsModel addBill(BillingDetailsModel billingDetailsModel) throws BillIdNotFoundException {
+		if (billingDetailsModel != null) {
+			if (billingDAO.existsById(billingDetailsModel.getBillingId())) {
+				throw new BillIdNotFoundException ("bill with this id already exists");
+			}
+
+			billingDetailsModel = parser.parse(billingDAO.save(parser.parse(billingDetailsModel)));
+		}
+
+		return billingDetailsModel;
+	}
+
+    
+    /* Implementation of updateBill to update Bill */
+    @Transactional
+	@Override
+	public BillingDetailsModel updateBill(BillingDetailsModel billingDetailsModel,Long billingId) throws BillIdNotFoundException {
+		if (billingDetailsModel != null) {
+			if (!billingDAO.existsById(billingDetailsModel.getBillingId())) {
+				throw new BillIdNotFoundException("No Such bill");
+			}
+
+			billingDetailsModel = parser.parse(billingDAO.save(parser.parse(billingDetailsModel)));
+		}
+		return billingDetailsModel;
+	}
+    
+    /* Implementation of viewBill to view Bill by billing id */
+	@Transactional
+	@Override
+	public BillingDetailsModel viewBill(Long billingId) throws BillIdNotFoundException {
+		if(billingId !=null) {
+			
+			if (!billingDAO.existsBybillingId(billingId))
+				throw new BillIdNotFoundException("No bill found for the given billing id");
+			
+		}
+		return parser.parse(billingDAO.findByBillingId(billingId));
+	}
+
+
+}

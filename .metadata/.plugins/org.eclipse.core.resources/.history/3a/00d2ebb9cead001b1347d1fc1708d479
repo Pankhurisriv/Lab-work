@@ -1,0 +1,13 @@
+package com.cg.ova.service;
+
+import com.cg.ova.exception.BillIdNotFoundException;
+import com.cg.ova.model.BillingDetailsModel;
+
+public interface IBillingDetailsService {
+	public BillingDetailsModel addBill(BillingDetailsModel bill) throws BillIdNotFoundException;
+	public BillingDetailsModel updateBill(BillingDetailsModel bill,Long billingId)throws BillIdNotFoundException;
+    public BillingDetailsModel viewBill(Long billingId) throws BillIdNotFoundException;
+	
+
+
+}

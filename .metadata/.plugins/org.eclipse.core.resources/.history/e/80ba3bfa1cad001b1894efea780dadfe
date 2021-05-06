@@ -1,0 +1,12 @@
+package com.example.demo.service;
+
+import com.example.demo.exception.LoginFailedException;
+import com.example.demo.exception.UserNotFoundException;
+import com.example.demo.model.UserModel;
+
+public interface IUserService {
+	public UserModel validateUser(Long userId, String password)throws LoginFailedException, UserNotFoundException;
+	//public boolean logoutUser(Long userId)throws UserNotFoundException;
+	
+	public UserModel viewUser(Long userId)throws UserNotFoundException;
+}

@@ -1,0 +1,52 @@
+package com.example.demo.util;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.example.demo.dao.IBillingDetailsRepository;
+import com.example.demo.entity.BillingDetails;
+import com.example.demo.model.BillingDetailsModel;
+
+
+
+@Service
+public class EMParserBill {
+	@Autowired
+	private IBillingDetailsRepository billDAO;
+	
+	@Autowired
+	private EMParserOrder orderParser;
+	
+	public EMParserBill() {
+		this.orderParser=new EMParserOrder();
+		}
+	
+    public EMParserBill(IBillingDetailsRepository billDAO) {
+		super();
+		this.billDAO = billDAO;
+		this.orderParser=new EMParserOrder();
+	}
+
+
+	public BillingDetailsModel parse(BillingDetails source) {
+		return source==null ? null:
+			new BillingDetailsModel (source.getBillingId(),
+					source.getTransactionMode(),
+					source.getTransactionDate(),
+					source.getTranactionStatus(),
+					orderParser.parse(source.getOrder())
+					);
+	}
+	public BillingDetails parse(BillingDetailsModel source) {
+		return source==null ? null:
+			new BillingDetails (source.getBillingId(),
+					source.getTransactionMode(),
+					source.getTransactionDate(),
+					source.getTranactionStatus(),
+					orderParser.parse(source.getOrder())
+					
+					);
+	
+
+}
+}

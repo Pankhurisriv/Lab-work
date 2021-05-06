@@ -1,0 +1,121 @@
+package com.cg.ova.entity;
+
+import java.io.Serializable;
+import java.time.LocalDateTime;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
+import javax.validation.constraints.PastOrPresent;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.format.annotation.DateTimeFormat.ISO;
+
+@Entity
+@Table(name="bill")
+public class BillingDetails implements Serializable{
+	private static final long serialVersionUID = 1L;
+	
+	@Id
+	@Column(name="billing_id")
+	private Long billingId;
+	
+	
+	@Column(name="transaction_mode")
+	private String transactionMode;
+	
+	@DateTimeFormat(iso = ISO.DATE)
+	@PastOrPresent(message = "join date cannot be a future date")
+	@Column(name="transaction_date")
+	private LocalDateTime transactionDate;
+	
+	@Column(name="transaction_status")
+	private String tranactionStatus;
+	
+	@OneToOne(cascade = CascadeType.PERSIST)
+	@JoinColumn(name="order_no")
+	private Order order;
+
+	public BillingDetails() {
+		// no implementation
+	}
+
+	
+
+	
+
+
+
+	public BillingDetails(Long billingId, String transactionMode,
+			@PastOrPresent(message = "join date cannot be a future date") LocalDateTime transactionDate,
+			String tranactionStatus, Order order) {
+		super();
+		this.billingId = billingId;
+		this.transactionMode = transactionMode;
+		this.transactionDate = transactionDate;
+		this.tranactionStatus = tranactionStatus;
+		this.order = order;
+	}
+
+
+
+
+
+
+
+	public Long getBillingId() {
+		return billingId;
+	}
+
+	public void setBillingId(Long billingId) {
+		this.billingId = billingId;
+	}
+
+	public Order getOrder() {
+		return order;
+	}
+
+	public void setOrder(Order order) {
+		this.order = order;
+	}
+
+	public String getTransactionMode() {
+		return transactionMode;
+	}
+
+	public void setTransactionMode(String transactionMode) {
+		this.transactionMode = transactionMode;
+	}
+
+
+
+	public LocalDateTime getTransactionDate() {
+		return transactionDate;
+	}
+
+
+
+	public void setTransactionDate(LocalDateTime transactionDate) {
+		this.transactionDate = transactionDate;
+	}
+
+
+
+	public String getTranactionStatus() {
+		return tranactionStatus;
+	}
+
+	public void setTranactionStatus(String tranactionStatus) {
+		this.tranactionStatus = tranactionStatus;
+	}
+
+	@Override
+	public String toString() {
+		return "BillingDetails [billingId=" + billingId + ", order=" + order + ", transactionMode=" + transactionMode
+				+ ", transactionDate=" + transactionDate + ", tranactionStatus=" + tranactionStatus + "]";
+	}
+	
+	
+}

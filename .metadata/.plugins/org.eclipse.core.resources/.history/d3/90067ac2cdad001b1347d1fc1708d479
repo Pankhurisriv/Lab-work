@@ -1,0 +1,77 @@
+package com.cg.ova.service.test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.Optional;
+
+
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import com.cg.ova.dao.IBillingDetailsRepository;
+import com.cg.ova.entity.BillingDetails;
+import com.cg.ova.entity.Order;
+import com.cg.ova.exception.BillIdNotFoundException;
+import com.cg.ova.model.BillingDetailsModel;
+import com.cg.ova.service.BillingDetailsImpl;
+
+
+@ExtendWith(MockitoExtension.class)
+public class BillingDetailsServiceTest {
+	@Mock
+	private IBillingDetailsRepository billDAO;
+
+	 /*
+					 * injecting package repository marked as @Mock into package service
+					 * implementation
+					 */
+	@InjectMocks
+	private BillingDetailsImpl billImpl;
+	
+	@Test
+	@DisplayName("BillingDetailsServiceImpl::addBill should add list of existing packages as AdminModel List")
+	void testAddBill() throws BillIdNotFoundException {
+		BillingDetails testdata = new BillingDetails(10L,"online", LocalDateTime.of(LocalDate.of(2021, 04, 23), LocalTime.of(16,45)),"SUCCESS",Order.get);
+		BillingDetailsModel expected = new BillingDetailsModel(10L,"online", LocalDateTime.of(LocalDate.of(2021, 04, 23), LocalTime.of(16,45)),"SUCCESS",new Order(1L,10L,70L,LocalDateTime.of(LocalDate.of(2021, 04, 23), LocalTime.of(16,45)),"Delivered",400));
+
+		Mockito.when(billDAO.save(testdata)).thenReturn(testdata);
+		
+		BillingDetailsModel actual = billImpl.addBill(expected);
+		assertEquals(expected, actual);
+	}
+	
+	@Test
+	@DisplayName("BillingDetailsServiceImpl::addBill should add list of existing packages as AdminModel List")
+	void testUpdateBill() throws BillIdNotFoundException {
+		BillingDetails testdata = new BillingDetails((long)10,(long)1,"online", LocalDate.now(),"SUCCESS");
+		BillingDetailsModel expected = new BillingDetailsModel((long)10,(long)1,"online", LocalDate.now(),"SUCCESS");
+
+		Mockito.when(billDAO.findById((long) testdata.getBillingId())).thenReturn(Optional.of(testdata));
+		
+		BillingDetailsModel actual = billImpl.updateBill(expected);
+		assertEquals(expected, actual);
+	}
+	
+	@Test
+	@DisplayName("BillingDetailsServiceImpl::addBill should add list of existing packages as AdminModel List")
+	void testViewBill() throws BillIdNotFoundException {
+		BillingDetails testdata = new BillingDetails((long)10,(long)1,"online", LocalDate.now(),"SUCCESS");
+		BillingDetailsModel expected = new BillingDetailsModel((long)10,(long)1,"online", LocalDate.now(),"SUCCESS");
+
+		Mockito.when(billDAO.findById((long) testdata.getBillingId())).thenReturn(Optional.of(testdata));
+		
+		BillingDetailsModel actual = billImpl.viewBill(expected);
+		assertEquals(expected, actual);
+	}
+	
+	
+	
+	
+}

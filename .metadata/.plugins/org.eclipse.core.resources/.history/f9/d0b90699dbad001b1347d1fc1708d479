@@ -1,0 +1,10 @@
+package com.cg.ova.service;
+
+import com.cg.ova.exception.FeedbackIdNotFoundException;
+import com.cg.ova.model.FeedbackModel;
+
+public interface IFeedbackService {
+	public FeedbackModel addFeedback(FeedbackModel feedbackModel) throws FeedbackIdNotFoundException ;
+	public FeedbackModel viewFeedback(Long feedbackId) throws FeedbackIdNotFoundException ;
+
+}

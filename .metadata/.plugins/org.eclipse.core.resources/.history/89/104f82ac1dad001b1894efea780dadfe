@@ -1,0 +1,51 @@
+package com.example.demo.util;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.example.demo.dao.IOrderRepository;
+import com.example.demo.entity.Order;
+import com.example.demo.model.OrderModel;
+
+
+@Service
+public class EMParserOrder {
+	@Autowired
+	private IOrderRepository orderDAO;
+	
+	@Autowired
+	private EMParserCustomer customerParser;
+	
+	public EMParserOrder(){
+		this.customerParser=new EMParserCustomer();
+	}
+	
+	public EMParserOrder(IOrderRepository orderDAO) {
+		super();
+		this.orderDAO = orderDAO;
+		this.customerParser=new EMParserCustomer();
+	}
+
+     public Order parse(OrderModel source) {
+		return source==null?null:
+			new Order (source.getOrderNo(),
+					customerParser.parse(source.getCustomer()),
+					source.getTotalAmount(),
+					source.getOrderDate(),
+					source.getStatus()
+					);
+	}
+
+	//convert order model to order entity
+	public OrderModel  parse(Order source) {
+		return source==null?null:
+			new OrderModel(source.getOrderNo(),
+					customerParser.parse(source.getCustomers()),
+					source.getTotalAmount(),
+					source.getOrderDate(),
+					source.getStatus()
+					
+					);
+	}
+
+}

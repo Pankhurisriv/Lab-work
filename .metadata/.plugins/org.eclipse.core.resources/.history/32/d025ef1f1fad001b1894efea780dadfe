@@ -1,0 +1,107 @@
+package com.cg.ova.service;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+import javax.transaction.Transactional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.cg.ova.dao.IVegetableDTORepository;
+import com.cg.ova.exception.VegetableIdNotFoundException;
+import com.cg.ova.model.VegetableDTOModel;
+
+
+
+@Service
+public class VegetableDTOServiceImpl implements IVegetableDTOService {
+
+	@Autowired
+	private IVegetableDTORepository vegetableDAO;
+	
+	@Autowired
+	private EMParserVegetableDTO parser;
+	
+	public VegetableDTOServiceImpl() {
+		this.parser = new EMParserVegetableDTO();
+		
+	}
+	
+    
+	public VegetableDTOServiceImpl(IVegetableDTORepository vegetableDAO) {
+		super();
+		this.vegetableDAO = vegetableDAO;
+		this.parser = new EMParserVegetableDTO();
+	}
+	@Transactional
+	@Override
+	public VegetableDTOModel addVegetable(VegetableDTOModel vegetableDTOModel) throws VegetableIdNotFoundException {
+		if (vegetableDTOModel != null) {
+			if (vegetableDAO.existsById(vegetableDTOModel.getVegId())) {
+				throw new VegetableIdNotFoundException ("vegetable with this id already exists");
+			}
+
+			vegetableDTOModel = parser.parse(vegetableDAO.save(parser.parse(vegetableDTOModel)));
+		}
+
+		return vegetableDTOModel;
+	}
+
+	@Transactional
+	@Override
+	public VegetableDTOModel updateVegetable(VegetableDTOModel vegetableDTOModel,Long vegId) throws VegetableIdNotFoundException {
+		if (vegetableDTOModel != null) {
+			if (!vegetableDAO.existsById(vegetableDTOModel.getVegId())) {
+				throw new VegetableIdNotFoundException("No Such vegetable");
+			}
+
+			vegetableDTOModel = parser.parse(vegetableDAO.save(parser.parse(vegetableDTOModel)));
+		}
+		return vegetableDTOModel;
+	}
+
+	@Transactional
+	@Override
+	public boolean  removeVegetable(Long vegId) throws VegetableIdNotFoundException {
+		if (vegId != null) {
+			if (!vegetableDAO.existsById(vegId)) {
+				throw new VegetableIdNotFoundException("No Such Vegetable exists");
+			}
+
+			  vegetableDAO.deleteById(vegId);
+			 
+		}
+		return true;
+	}
+
+
+	@Override
+	public VegetableDTOModel viewVegetable(Long vegId) throws VegetableIdNotFoundException {
+		if(vegId !=null) {
+			
+			if (!vegetableDAO.existsById(vegId))
+				throw new VegetableIdNotFoundException("No Vegetable found for the given vegetable id");
+			
+		}
+		return parser.parse(vegetableDAO.findByVegId(vegId));
+	}
+
+	
+	
+	@Override
+	public List<VegetableDTOModel> viewVegetableList(String type) throws VegetableIdNotFoundException {
+            if(type !=null) {
+			
+			if (!vegetableDAO.existsByType(type))
+				throw new VegetableIdNotFoundException("No vegetable found for the given category");
+			
+		}
+            return vegetableDAO.findByType(type).stream().map(parser::parse).collect(Collectors.toList());
+		
+	}
+
+	
+
+
+}

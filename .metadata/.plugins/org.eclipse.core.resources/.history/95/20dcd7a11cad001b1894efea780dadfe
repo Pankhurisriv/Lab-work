@@ -1,0 +1,20 @@
+package com.example.demo.service;
+
+import com.example.demo.exception.AdminIdNotFoundException;
+import com.example.demo.model.AdminModel;
+
+public interface IAdminService {
+	/* definition of addAdmin method for adding new admin */
+	public AdminModel addAdmin(AdminModel adminModel) throws AdminIdNotFoundException ;
+	
+	/* definition of updateAdmin method for adding  admin */
+	public AdminModel updateAdminDetails(AdminModel adminModel) throws AdminIdNotFoundException;
+	
+	/* definition of removeAdmin method for remove  admin */
+	public boolean removeAdmin(Long adminId) throws AdminIdNotFoundException;
+	
+	/* definition of viewAdmin method for view admin */
+	public AdminModel viewAdmin(Long adminId) throws AdminIdNotFoundException;
+
+
+}

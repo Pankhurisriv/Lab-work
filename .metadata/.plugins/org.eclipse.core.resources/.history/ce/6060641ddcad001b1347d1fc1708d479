@@ -1,0 +1,19 @@
+package com.cg.ova.service;
+
+import java.util.List;
+
+import com.cg.ova.exception.VegetableIdNotFoundException;
+import com.cg.ova.model.VegetableDTOModel;
+
+
+
+
+public interface IVegetableDTOService {
+	public VegetableDTOModel addVegetable(VegetableDTOModel dto) throws VegetableIdNotFoundException;
+	public VegetableDTOModel updateVegetable(VegetableDTOModel dto) throws VegetableIdNotFoundException;
+	public boolean removeVegetable(Long vegeId)throws VegetableIdNotFoundException;
+	public VegetableDTOModel viewVegetable(Long vegId) throws VegetableIdNotFoundException;
+	public List<VegetableDTOModel> viewVegetableList(String type) throws VegetableIdNotFoundException;
+	
+
+}

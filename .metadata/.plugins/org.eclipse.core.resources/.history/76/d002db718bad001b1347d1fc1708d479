@@ -1,0 +1,137 @@
+package com.cg.ova.service.test;
+
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.boot.test.context.SpringBootTest;
+import com.cg.ova.dao.IVegetableDTORepository;
+import com.cg.ova.entity.CartDTO;
+import com.cg.ova.entity.Customer;
+import com.cg.ova.entity.Order;
+import com.cg.ova.entity.OrderStatus;
+import com.cg.ova.entity.VegetableDTO;
+import com.cg.ova.exception.VegetableIdNotFoundException;
+import com.cg.ova.model.AddressModel;
+import com.cg.ova.model.CartDTOModel;
+import com.cg.ova.model.CustomerModel;
+import com.cg.ova.model.OrderModel;
+import com.cg.ova.model.VegetableDTOModel;
+import com.cg.ova.service.VegetableDTOServiceImpl;
+import static org.junit.jupiter.api.Assertions.*;
+
+@ExtendWith(MockitoExtension.class)
+@SpringBootTest
+	public class VegetableDTOServiceImplTest {
+
+		@Mock
+		private IVegetableDTORepository vegetableDAO;
+
+		@InjectMocks /*
+						 * injecting package repository marked as @Mock into package service
+						 * implementation
+						 */
+						 
+		private VegetableDTOServiceImpl vegetableImpl;
+		BigDecimal bd= new BigDecimal("100.00");
+		BigInteger bi= new BigInteger("100");
+		
+		Customer customer1=new Customer(12L,"Rahul", "8447630809", "Rahul@gmail.com","abc13",new AddressModel("B-120","Abc","sector21","Noida","UP","20316"));
+		CustomerModel customer2=new CustomerModel(12L,"Rahul", "8447630809", "Rahul@gmail.com","abc13",new AddressModel("B-120","Abc","sector21","Noida","UP","20316"));
+
+		CartDTO cart1=new CartDTO(1L,customer1);
+		CartDTOModel cart2=new CartDTOModel(1L,customer2);
+		
+		Order order1=new Order(1L,customer1,bd,LocalDateTime.of(LocalDate.of(2021, 04, 23), LocalTime.of(16,45)),OrderStatus.Delivered);
+		OrderModel order2=new OrderModel(1L,customer2,bd,LocalDateTime.of(LocalDate.of(2021, 04, 23), LocalTime.of(16,45)),OrderStatus.Delivered);
+
+		@Test
+		@DisplayName("VegetableServiceImpl::add should add list of existing packages as VegetableModel List")
+		void testAddVegetable() throws VegetableIdNotFoundException {
+			VegetableDTO testdata = new VegetableDTO(10L,"ORANGE","FRUIT",bi,2,cart1,order1);
+			
+			VegetableDTOModel expected = new VegetableDTOModel(10L,"ORANGE","FRUIT",bi,2,cart2,order2);
+
+			Mockito.when(vegetableDAO.existsById(10L)).thenReturn(true);
+			Mockito.when(vegetableDAO.save(testdata)).thenReturn(testdata);
+			
+			VegetableDTOModel actual = vegetableImpl.addVegetable(expected);
+			assertEquals(expected, actual);
+		}
+
+		@Test
+		@DisplayName("VegetableServiceImpl::update should updated list of existing packages as VegetableDTOModel List")
+		void testUpdateVegetable() throws VegetableIdNotFoundException {
+			VegetableDTO testdata = new VegetableDTO(10L,"ORANGE","NON-LEAFY","FRUIT",70.0,1);
+			VegetableDTOModel expected = new VegetableDTOModel(10L,"ORANGE","NON-LEAFY","FRUIT",70.0,1);
+
+			Mockito.when(vegetableDAO.findById( testdata.getVegId())).thenReturn(Optional.of(testdata));
+			
+			VegetableDTOModel actual = vegetableImpl.updateVegetable(expected);
+			assertEquals(expected, actual);
+
+		}
+
+		@Test
+		@DisplayName("VegetableServiceImpl::removevegetables should remove list of existing packages as VegetableDTOModel list")
+		void testRemoveVegetable() throws VegetableIdNotFoundException {
+			VegetableDTO testdata = new VegetableDTO(10L,"ORANGE","NON-LEAFY","FRUIT",70.0,1);
+			VegetableDTOModel expected = new VegetableDTOModel(10L,"ORANGE","NON-LEAFY","FRUIT",70.0,1);
+
+
+		    Mockito.when(vegetableDAO.findById(10L)).thenReturn(Optional.of(testdata));
+			Mockito.doNothing().when(vegetableDAO).deleteById(10L);
+			boolean result = vegetableImpl.removeVegetable(10L);
+			assertTrue(result);
+		}
+
+		@Test
+		@DisplayName("VegetableServiceImpl::viewvegetable should return list of existing packages as VegetableDTOmodel ")
+		void testViewVegetable() throws VegetableIdNotFoundException  {
+			VegetableDTO testdata = new VegetableDTO(10L,"ORANGE","NON-LEAFY","FRUIT",70.0,1,null,null);
+			VegetableDTOModel expected = new VegetableDTOModel(10L,"ORANGE","NON-LEAFY","FRUIT",70.0,1);
+
+			Mockito.when(vegetableDAO.existsById(10L)).thenReturn(true);
+			Mockito.when(vegetableDAO.findById(10L)).thenReturn(Optional.of(testdata));
+			
+			VegetableDTOModel actual= vegetableImpl.viewVegetable(10L);
+			assertEquals(expected, actual);
+
+		}
+		@Test
+		@DisplayName("CustomerServiceImpl::viewcustomerlist should return list of existing customer by location")
+		void testViewVegetableList() throws VegetableIdNotFoundException {
+
+			List<VegetableDTO> testdata = Arrays.asList(new VegetableDTO[] {
+					new VegetableDTO(10L,"ORANGE","NON-LEAFY","FRUIT",70.0,1),
+					new VegetableDTO(11L,"APPLE","NON-LEAFY","FRUIT",80.0,2)
+			});
+
+			
+			
+			List<VegetableDTOModel> expected = Arrays.asList(new VegetableDTOModel[] {
+					new VegetableDTOModel(10L,"ORANGE","NON-LEAFY","FRUIT",70.0,1),
+					new VegetableDTOModel(11L,"APPLE","NON-LEAFY","FRUIT",80.0,2)
+			});
+
+			Mockito.when(vegetableDAO. existsByType("FRUIT")).thenReturn(true);
+			
+			Mockito.when(vegetableDAO.findByType("FRUIT")).thenReturn(Optional.of(testdata));
+			
+			List<VegetableDTOModel> actual = vegetableImpl.viewVegetableList("FRUIT");
+			
+			assertEquals(expected, actual);
+		}
+
+}

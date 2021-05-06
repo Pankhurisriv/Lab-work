@@ -1,0 +1,45 @@
+package com.cg.ova.util;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.example.demo.dao.ICartDTORepository;
+import com.example.demo.entity.CartDTO;
+import com.example.demo.model.CartDTOModel;
+
+
+
+@Service
+public class EMParserCartDTO {
+	@Autowired
+	private ICartDTORepository cartDAO;
+	
+	@Autowired
+	private EMParserCustomer customerParser;
+	
+	public EMParserCartDTO() {
+		this.customerParser=new EMParserCustomer();
+		}
+	
+  
+	public EMParserCartDTO(ICartDTORepository cartDAO) {
+		super();
+		this.cartDAO = cartDAO;
+		this.customerParser=new EMParserCustomer();
+	}
+
+	public CartDTOModel parse(CartDTO source) {
+		return source==null ? null:
+			new CartDTOModel (source.getCartId(),
+					customerParser.parse(source.getCustomer())
+					);
+	}
+		
+		
+		public CartDTO parse(CartDTOModel source) {
+			return source==null ? null:
+				new CartDTO (source.getCartId(),
+						customerParser.parse(source.getCustomer())
+						);
+
+}
+	}

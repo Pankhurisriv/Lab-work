@@ -1,0 +1,19 @@
+package com.cg.ova.service;
+import java.util.List;
+
+import com.cg.ova.exception.CartIdNotFoundException;
+import com.cg.ova.model.CartDTOModel;
+import com.cg.ova.model.VegetableDTOModel;
+
+
+
+
+public interface ICartDTOService {
+	public CartDTOModel addToCart(CartDTOModel cart) throws CartIdNotFoundException;
+	public CartDTOModel increaseVegQuantity(CartDTOModel cart,VegetableDTOModel veg, int quantity) throws CartIdNotFoundException;
+	public CartDTOModel decreaseVegQuantity(CartDTOModel cart,VegetableDTOModel veg, int quantity) throws CartIdNotFoundException;
+	public boolean removeVeg(Long cartId) throws CartIdNotFoundException;
+	public CartDTOModel removeAllVegetable(CartDTOModel cart) throws CartIdNotFoundException;
+    public List<CartDTOModel> viewAllItems() throws CartIdNotFoundException;
+
+}
