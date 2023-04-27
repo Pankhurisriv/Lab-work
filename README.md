@@ -1,4 +1,4 @@
-# Online-Vegetable-Application-middleware
+# Online-Vegetable-Application
 Developed  a prototype of E-Commerce Website using Java, Spring boot, Rest API, OracleSQL. Implemented software code for a single page web application.
 Executed unit/integration tests.
 Developed UI using HTML5, CSS3, JavaScript, Bootstrap,jQuery, AngularJS.
